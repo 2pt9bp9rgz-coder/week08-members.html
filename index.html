@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>チームメンバー</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              taupe: {
+                50: '#f5f3f0',
+                100: '#ede8e3',
+                200: '#ddd4ca',
+                300: '#cbb9ad',
+                400: '#b8a098',
+                500: '#a68784',
+                600: '#8b6d62',
+                700: '#725849',
+                800: '#5a4839',
+                900: '#48372a',
+              },
+            },
+          },
+        },
+      }
+    </script>
+</head>
+<body class="bg-blue-200 min-h-screen">
+<header class="bg-taupe-900 text-white pb-10">
+    <div class="max-w-6xl mx-auto px-4 pt-4">
+        <div class="py-3">
+            <div class="text-3xl font-bold">Charactors</div>
+        </div>
+        <div class="rounded-3xl bg-white p-6 shadow-xl">
+            <h1 class="text-3xl font-bold text-taupe-900 mb-4">メンバーを絞り込み</h1>
+            <div class="grid gap-6 lg:grid-cols-2">
+                <div>
+                    <p class="font-semibold text-taupe-900 mb-3">役割</p>
+                    <div class="flex flex-wrap gap-3">
+                        <label class="flex items-center gap-2 bg-slate-100 text-taupe-800 px-4 py-2 rounded-full cursor-pointer">
+                            <input type="checkbox" name="roleFilter" value="デザイナー" checked class="accent-blue-500">
+                            <span>デザイナー</span>
+                        </label>
+                        <label class="flex items-center gap-2 bg-slate-100 text-taupe-800 px-4 py-2 rounded-full cursor-pointer">
+                            <input type="checkbox" name="roleFilter" value="営業" checked class="accent-blue-500">
+                            <span>営業</span>
+                        </label>
+                        <label class="flex items-center gap-2 bg-slate-100 text-taupe-800 px-4 py-2 rounded-full cursor-pointer">
+                            <input type="checkbox" name="roleFilter" value="エンジニア" checked class="accent-blue-500">
+                            <span>エンジニア</span>
+                        </label>
+                    </div>
+                </div>
+                <div>
+                    <p class="font-semibold text-taupe-900 mb-3">性別</p>
+                    <div class="flex flex-wrap gap-3">
+                        <label class="flex items-center gap-2 bg-slate-100  text-taupe-800 px-4 py-2 rounded-full cursor-pointer">
+                            <input type="checkbox" name="genderFilter" value="女性" checked class="accent-pink-500">
+                            <span>女性</span>
+                        </label>
+                        <label class="flex items-center gap-2 bg-slate-100  text-taupe-800 px-4 py-2 rounded-full cursor-pointer">
+                            <input type="checkbox" name="genderFilter" value="男性" checked class="accent-blue-500">
+                            <span>男性</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="max-w-6xl mx-auto px-4 mt-6 pb-10">
+    <div id="memberList" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"></div>
+</main>
+
+    <script>
+        const members = [
+        { name: "ハローキティ", role: "デザイナー", gender: "女性", comment: "UIにこだわっています", image: "mv-hellokitty.png" },
+        { name: "マイメロ", role: "エンジニア", gender: "女性", comment: "バックエンドが得意です", image: "list-mymelody.png" },
+        { name: "ハンギョドン", role: "営業", gender: "男性", comment: "ユーザー視点を大切に", image: "mv-hangyodon-1 (1).png" },
+        { name: "ポムポムプリン", role: "デザイナー", gender: "女性", comment: "顧客満足度を最優先に", image: "list-pompompurin.png" },
+        { name: "シナモロール", role: "エンジニア", gender: "女性", comment: "トレンド分析が得意", image: "mv-cinnamon (1).png" },
+        { name: "ぐでたま", role: "営業", gender: "男性", comment: "バグは見逃しません", image: "mv-gudetama.png" },
+        { name: "バッドばつ丸", role: "デザイナー", gender: "男性", comment: "情報保護に厳しい", image: "list-badtzmaru-1.png" },
+        { name: "ケロケロケロッピ", role: "エンジニア", gender: "男性", comment: "システム安定性重視", image: "mv-keroppi.png" },
+        { name: "タキシード・サム", role: "営業", gender: "男性", comment: "効率化を追求", image: "list-tuxedosam.png" },
+        { name: "リトルツインスターズ", role: "エンジニア", gender: "女性", comment: "創造性あふれるアイデア", image: "mv-kikilala.png" },
+        ];
+
+        const memberList = document.getElementById("memberList");
+        const roleFilters = document.querySelectorAll('input[name="roleFilter"]');
+        const genderFilters = document.querySelectorAll('input[name="genderFilter"]');
+
+        function renderMembers() {
+            const selectedRoles = [...roleFilters]
+                .filter((checkbox) => checkbox.checked)
+                .map((checkbox) => checkbox.value);
+            const selectedGenders = [...genderFilters]
+                .filter((checkbox) => checkbox.checked)
+                .map((checkbox) => checkbox.value);
+
+            const filteredMembers = members.filter((member) => {
+                const matchesRole = selectedRoles.length === 0 || selectedRoles.includes(member.role);
+                const matchesGender = selectedGenders.length === 0 || selectedGenders.includes(member.gender);
+                return matchesRole && matchesGender;
+            });
+
+            memberList.innerHTML = "";
+
+            if (filteredMembers.length === 0) {
+                const emptyMessage = document.createElement("div");
+                emptyMessage.className = "text-2xl text-taupe-900 font-bold";
+                emptyMessage.textContent = "検索結果は0人でした。";
+                memberList.appendChild(emptyMessage);
+                return;
+            }
+
+            filteredMembers.forEach((member) => {
+                const card = document.createElement("div");
+                card.className = "bg-white rounded-lg shadow p-4";
+
+                card.innerHTML = `
+                    <img src="${member.image}" alt="${member.name}" class="w-full h-40 object-cover  rounded-md mb-3">
+                    <h2 class="text-lg font-bold">${member.name}</h2>
+                    <p class="text-pink-500 text-sm">${member.role}</p>
+                    <p class="text-gray-600 mt-2">${member.comment}</p>
+                `;
+
+                memberList.appendChild(card);
+            });
+        }
+
+        roleFilters.forEach((checkbox) => {
+            checkbox.addEventListener("change", renderMembers);
+        });
+
+        genderFilters.forEach((checkbox) => {
+            checkbox.addEventListener("change", renderMembers);
+        });
+
+        renderMembers();
+    </script>
+</body>
+
+</html>
